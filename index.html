@@ -1,13 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Which Bitcoin CCG Card Are You?</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Which Bitcoin CCG Card Are You?</title>
+<style>
+:root{--bg:#10110f;--panel:#191b17;--text:#f3f0e8;--muted:#aaa99f;--accent:#f7931a;--border:#373a31}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+main{width:min(760px,92vw);margin:auto;padding:48px 0}.screen{display:none}.screen.active{display:block}
+.eyebrow{color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:.78rem}
+h1{font-size:clamp(2.2rem,7vw,4.6rem);line-height:.96;margin:.25em 0}h2{font-size:clamp(1.7rem,5vw,2.7rem);line-height:1.1}
+p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
+.primary{background:var(--accent);color:#111;border:0;border-radius:10px;padding:14px 22px;font-weight:800;cursor:pointer}
+.answers{display:grid;gap:12px;margin:28px 0}.answer{background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:17px 18px;text-align:left;cursor:pointer;line-height:1.4}.answer:hover{border-color:var(--accent);transform:translateY(-1px)}
+.progress{height:6px;background:#292b25;border-radius:99px;overflow:hidden;margin-bottom:38px}.progress>div{height:100%;background:var(--accent)}
+.result{border:1px solid var(--border);background:var(--panel);border-radius:18px;padding:28px}.result-name{color:var(--accent);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.card-name{font-size:clamp(2rem,7vw,3.8rem);margin:.12em 0}.traits{color:var(--muted);font-size:.92rem}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.secondary{background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:13px 18px;cursor:pointer}
+@media(max-width:520px){main{padding:30px 0}.answer{padding:15px}.result{padding:21px}}
+</style>
 </head>
-
 <body>
+<main>
+<section id="start" class="screen active">
+  <div class="eyebrow">Bitcoin CCG Personality Quiz</div>
   <h1>Which Bitcoin CCG Card Are You?</h1>
-  <p>Quiz coming soon.</p>
+  <p>Answer 12 extremely scientific questions. We'll tell you which card matches your particular brand of decision-making.</p>
+  <button class="primary" onclick="startQuiz()">Take the quiz</button>
+</section>
+<section id="quiz" class="screen">
+  <div class="progress"><div id="bar"></div></div>
+  <div class="eyebrow" id="counter"></div>
+  <h2 id="question"></h2>
+  <div class="answers" id="answers"></div>
+</section>
+<section id="result" class="screen">
+  <div class="result">
+    <div class="result-name">You are</div>
+    <div class="card-name" id="cardName"></div>
+    <h2 id="archetype"></h2>
+    <div class="traits" id="traits"></div>
+    <p id="description"></p>
+    <div class="actions">
+      <button class="primary" onclick="shareResult()">Share result</button>
+      <button class="secondary" onclick="restart()">Retake quiz</button>
+    </div>
+  </div>
+</section>
+</main>
+<script>
+const results={
+ hacker:{card:"Cypherpunk",archetype:"The Hacker",traits:"Curious · analytical · inventive · inquisitive · self-taught",description:"You need to know how things work. You’re the type to open the settings, read the documentation, or disappear down a rabbit hole because one question turned into twelve. You don’t just want the answer—you want to understand it."},
+ independent:{card:"Dustin D. Trammell",archetype:"The Independent",traits:"Self-reliant · unconventional · confident · autonomous · individualistic",description:"You think for yourself and you’re comfortable going against the grain. You’d rather understand your options and choose your own path than do something just because everyone else is doing it."},
+ social:{card:"Podcaster",archetype:"The Social Butterfly",traits:"Outgoing · communicative · personable · expressive · welcoming",description:"You collect conversations like other people collect hobbies. You like meeting people, swapping ideas, making introductions, and bringing others into whatever has your attention."},
+ explorer:{card:"Pre-Coiner",archetype:"The Explorer",traits:"Curious · open-minded · adventurous · receptive · discovery-driven",description:"“Wait, what’s that?” is how most of your rabbit holes begin. You like discovering new ideas, places, hobbies, and experiences. You don’t need to know exactly where something leads before deciding it’s worth exploring."},
+ believer:{card:"Bitcoin Maximalist",archetype:"The True Believer",traits:"Driven · committed · confident · persuasive · persistent · high-conviction",description:"Once you believe in something, you’re in. You commit hard, stand by your decisions, and have a habit of bringing other people along for the ride. Some call it stubbornness. You call it conviction."},
+ lucky:{card:"Lucky Hash",archetype:"The Lucky One",traits:"Hopeful · easygoing · positive · trusting · resilient",description:"You have a suspicious amount of faith that things will work themselves out—and somehow, they often do. Bad odds don’t bother you much. There’s always a chance things could go your way."},
+ free:{card:"Leavin' Work Early",archetype:"The Free Spirit",traits:"Spontaneous · flexible · instinctive · carefree · adaptable",description:"Plans are useful right up until something more interesting comes along. You’re comfortable changing course, following your gut, and figuring out the details later. Sometimes you just have to call it a day."},
+ tinkerer:{card:"Homebrew Trading Script",archetype:"The Tinkerer",traits:"Inventive · experimental · hands-on · playful · resourceful",description:"Why use the standard solution when you could make your own? You like experimenting, modifying, and trying things just to see what happens. Half the fun is figuring it out along the way."}
+};
+const q=(question,answers)=>({question,answers});
+const a=(text,p,s)=>({text,p,s});
+const questions=[
+q("You suddenly have an entire Saturday with no plans. What happens?",[
+a("Finally. Time to disappear into a rabbit hole I’ve been meaning to investigate.","hacker","explorer"),a("Text the group chat. Somebody has to be doing something.","social","free"),a("I’ll figure it out when I get there. That’s the beauty of it.","free","lucky"),a("I already have three ideas and I’m weirdly excited about all of them.","tinkerer","explorer"),a("Start the thing I’ve been saying I’d get around to for months.","believer","independent")]),
+q("Something breaks. What’s your first move?",[
+a("Take it apart. Worst case, I learn something.","tinkerer","hacker"),a("Research exactly what went wrong before touching anything.","hacker","independent"),a("Give it a minute. Sometimes these things just fix themselves.","lucky","free"),a("Try turning it off and back on. That works way more often than it should.","lucky","tinkerer"),a("Fix it myself. I’m not calling someone unless I absolutely have to.","independent","tinkerer")]),
+q("You’re on a road trip and see a sign for a bizarre roadside attraction.",[
+a("Pull over. Obviously. When are we ever going to be here again?","explorer","free"),a("Look it up first. If it seems worth the detour, I’m in.","explorer","hacker"),a("Nope, we have a schedule to keep.","independent","believer"),a("I could take it or leave it. If others want to stop, sure.","social","free"),a("Absolutely. And I’m convincing everyone else it’ll be worth it.","believer","social")]),
+q("You’re losing a game. What’s the strategy?",[
+a("Recalculate. There’s still a path to victory.","believer","hacker"),a("Double down. We did not come this far to become cowards.","believer","independent"),a("Try something nobody at the table is expecting.","tinkerer","free"),a("Start hyping up the comeback. Morale matters.","social","believer"),a("Honestly? I have a weird feeling we’re about to pull this off.","lucky","believer")]),
+q("Group project. Who are you?",[
+a("Somehow, I’m in charge now.","believer","independent"),a("Keeping everyone talking and making sure nobody gets left out.","social","explorer"),a("Just give me my part. I work better on my own.","independent","believer"),a("“Okay, but what if we did it like this instead?”","tinkerer","explorer"),a("Volunteer for the part I’ve never done before. Might as well learn something.","explorer","hacker")]),
+q("You’re assembling furniture and realize you skipped three steps.",[
+a("Ignore the instructions. I can figure this out myself.","independent","tinkerer"),a("Keep going. We’ve committed to this version now.","believer","free"),a("If it’s standing, we’re done here.","free","lucky"),a("How important could those three steps possibly be?","lucky","free"),a("Look up the instructions and figure out exactly where I went wrong.","hacker","believer")]),
+q("There’s a 1% chance this works.",[
+a("So you’re saying there’s a chance.","lucky","believer"),a("What happens if it doesn’t work?","hacker","independent"),a("Worst case, we get a good story out of it.","free","lucky"),a("I’m already doing it.","free","independent"),a("Okay, but hear me out—I think I can make this work.","tinkerer","lucky")]),
+q("You walk into a party where you know exactly one person.",[
+a("Twenty minutes later, I somehow know everyone.","social","explorer"),a("Find the person having the most interesting conversation.","explorer","hacker"),a("Find my people and stay there all night.","believer","social"),a("End up convincing several people to do something after the party.","social","believer"),a("Introduce myself to whoever looks like they’re having the most fun.","social","explorer")]),
+q("Someone confidently says something you think is completely wrong.",[
+a("I need to know why they think that.","hacker","explorer"),a("Oh, we’re discussing this. Immediately.","believer","hacker"),a("They can think whatever they want. I know where I stand.","independent","believer"),a("Maybe I’m wrong. Time to investigate.","hacker","explorer"),a("Let them finish. Maybe I’m about to learn something weird.","explorer","hacker")]),
+q("You get handed a box of random junk and told to make something useful.",[
+a("Best assignment I’ve had all week.","tinkerer","explorer"),a("First, inventory everything and figure out what we can actually make.","hacker","tinkerer"),a("Grab something and start. I’m sure inspiration will strike eventually.","lucky","free"),a("Wait, I actually have a GREAT idea.","tinkerer","lucky")]),
+q("The group chat has spent 45 minutes trying to decide where to eat.",[
+a("I’m making the reservation. You’re welcome.","independent","believer"),a("Okay, everyone send your top two. I’ll figure this out.","social","hacker"),a("I genuinely do not care. Someone just tell me where to be.","free","social"),a("Wait—I know a place none of you have tried.","explorer","social"),a("Pick somewhere. If it sucks, we’ll go somewhere else.","free","lucky")]),
+q("You pick up a new hobby. What happens next?",[
+a("Three hours later, I know an unreasonable amount about it.","hacker","explorer"),a("I immediately start modifying something because I think I can make it better.","tinkerer","hacker"),a("Everyone I know is about to hear about this. Repeatedly.","social","believer"),a("Six months later, I’m still doing it. I may have made this part of my personality.","believer","independent"),a("Immediately buy way too much stuff for it. I live here now.","tinkerer","believer")])
+];
+let current=0,scores={},primaryCounts={};
+function resetScores(){Object.keys(results).forEach(k=>{scores[k]=0;primaryCounts[k]=0})}
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active")}
+function startQuiz(){current=0;resetScores();show("quiz");renderQuestion()}
+function renderQuestion(){const item=questions[current];document.getElementById("counter").textContent="Question "+(current+1)+" of "+questions.length;document.getElementById("question").textContent=item.question;document.getElementById("bar").style.width=((current)/questions.length*100)+"%";const box=document.getElementById("answers");box.innerHTML="";item.answers.forEach(ans=>{const b=document.createElement("button");b.className="answer";b.textContent=ans.text;b.onclick=()=>choose(ans);box.appendChild(b)})}
+function choose(ans){scores[ans.p]+=2;scores[ans.s]+=1;primaryCounts[ans.p]++;current++;if(current<questions.length)renderQuestion();else finish()}
+function finish(){
+  /* Normalize by each archetype's available scoring exposure. This prevents
+     archetypes with more mapped opportunities from winning by structure alone. */
+  const exposure={hacker:25,independent:19,social:21,explorer:22,believer:28,lucky:18,free:20,tinkerer:23};
+  const adjusted={};Object.keys(scores).forEach(k=>adjusted[k]=scores[k]/exposure[k]);
+  const max=Math.max(...Object.values(adjusted));
+  let tied=Object.keys(adjusted).filter(k=>Math.abs(adjusted[k]-max)<1e-10);
+  if(tied.length>1){const pmax=Math.max(...tied.map(k=>primaryCounts[k]));tied=tied.filter(k=>primaryCounts[k]===pmax)}
+  const winner=tied[0];const r=results[winner];
+  document.getElementById("cardName").textContent=r.card;document.getElementById("archetype").textContent=r.archetype;document.getElementById("traits").textContent=r.traits;document.getElementById("description").textContent=r.description;show("result")
+}
+function restart(){show("start");window.scrollTo({top:0,behavior:"smooth"})}
+async function shareResult(){const card=document.getElementById("cardName").textContent,arch=document.getElementById("archetype").textContent;const text="I got "+card+" — "+arch+" — on the Bitcoin CCG personality quiz.";if(navigator.share){try{await navigator.share({title:"Which Bitcoin CCG Card Are You?",text,url:location.href});return}catch(e){}}try{await navigator.clipboard.writeText(text+" "+location.href);alert("Result copied to clipboard.")}catch(e){alert(text)}}
+resetScores();
+</script>
 </body>
 </html>
