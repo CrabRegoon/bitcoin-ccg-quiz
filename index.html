@@ -17,7 +17,8 @@ p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
 .result{border:1px solid var(--border);background:var(--panel);border-radius:18px;padding:28px}.result-name{color:var(--accent);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.card-name{font-size:clamp(2rem,7vw,3.8rem);margin:.12em 0}.traits{color:var(--muted);font-size:.92rem}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.secondary{background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:13px 18px;cursor:pointer}
 @media(max-width:520px){main{padding:30px 0}.answer{padding:15px}.result{padding:21px}}
 .brand-footer{display:flex;justify-content:center;margin-top:40px}.brand{display:inline-block}.brand img{display:block;width:min(200px,55vw);height:auto}
-.answer[aria-pressed="true"]{border-color:var(--accent);background:#302719}.navigation{display:flex;justify-content:space-between;gap:12px}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.card-image{display:block;width:min(100%,420px);height:auto;margin:24px auto}.actions a{text-decoration:none;display:inline-block}
+.answer[aria-pressed="true"]{border-color:var(--accent);background:#302719}.navigation{display:flex;justify-content:space-between;gap:12px}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.result-header{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:24px;align-items:start}.result-heading{min-width:0}.result-card{display:flex;flex-direction:column;align-items:center;gap:14px}.card-image{display:block;width:100%;height:auto;margin:0}.result-card a{text-decoration:none;text-align:center;width:100%;font-size:.9rem}.result-heading .card-name{font-size:clamp(2rem,4.5vw,3rem)}.actions a{text-decoration:none;display:inline-block}
+@media(max-width:600px){.result-header{grid-template-columns:1fr}.result-card{width:min(100%,300px);justify-self:center}.result-heading .card-name{font-size:clamp(2rem,7vw,3rem)}}
 </style>
 </head>
 <body>
@@ -37,14 +38,20 @@ p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
 </section>
 <section id="result" class="screen">
   <div class="result">
-    <div class="result-name">You are</div>
-    <div class="card-name" id="cardName"></div>
-    <h2 id="archetype"></h2>
-    <div class="traits" id="traits"></div>
+    <div class="result-header">
+      <div class="result-heading">
+        <div class="result-name">You are</div>
+        <div class="card-name" id="cardName"></div>
+        <h2 id="archetype"></h2>
+        <div class="traits" id="traits"></div>
+      </div>
+      <div class="result-card">
+        <img id="cardImage" class="card-image" alt="">
+        <a id="explorerLink" class="primary" target="_blank" rel="noopener noreferrer">View in Card Explorer</a>
+      </div>
+    </div>
     <p id="description"></p>
-    <img id="cardImage" class="card-image" alt="">
     <div class="actions">
-      <a id="explorerLink" class="primary" target="_blank" rel="noopener noreferrer">View in Card Explorer</a>
       <button class="secondary" onclick="shareResult()">Share result</button>
       <button class="secondary" onclick="restart()">Retake quiz</button>
     </div>
