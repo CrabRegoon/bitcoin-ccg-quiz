@@ -16,13 +16,12 @@ p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
 .progress{height:6px;background:#292b25;border-radius:99px;overflow:hidden;margin-bottom:38px}.progress>div{height:100%;background:var(--accent)}
 .result{border:1px solid var(--border);background:var(--panel);border-radius:18px;padding:28px}.result-name{color:var(--accent);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.card-name{font-size:clamp(2rem,7vw,3.8rem);margin:.12em 0}.traits{color:var(--muted);font-size:.92rem}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.secondary{background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:13px 18px;cursor:pointer}
 @media(max-width:520px){main{padding:30px 0}.answer{padding:15px}.result{padding:21px}}
-.brand{display:inline-block;margin-bottom:28px}.brand img{display:block;width:min(240px,65vw);height:auto}
+.brand-footer{display:flex;justify-content:center;margin-top:40px}.brand{display:inline-block}.brand img{display:block;width:min(200px,55vw);height:auto}
 .answer[aria-pressed="true"]{border-color:var(--accent);background:#302719}.navigation{display:flex;justify-content:space-between;gap:12px}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.card-image{display:block;width:min(100%,420px);height:auto;margin:24px auto}.actions a{text-decoration:none;display:inline-block}
 </style>
 </head>
 <body>
 <main>
-<a class="brand" href="https://bitcoin-ccg.roguesignal.io" aria-label="Visit Bitcoin CCG"><img src="assets/logo.png" alt="Bitcoin CCG"></a>
 <section id="start" class="screen active">
   <div class="eyebrow">Bitcoin CCG Personality Quiz</div>
   <h1>Which Bitcoin CCG Card Are You?</h1>
@@ -51,6 +50,7 @@ p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
     </div>
   </div>
 </section>
+<footer class="brand-footer"><a class="brand" href="https://bitcoin-ccg.roguesignal.io" aria-label="Visit Bitcoin CCG"><img src="assets/logo.png" alt="Bitcoin CCG"></a></footer>
 </main>
 <script>
 const results={
