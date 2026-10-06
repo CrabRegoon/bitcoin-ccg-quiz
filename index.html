@@ -16,10 +16,13 @@ p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
 .progress{height:6px;background:#292b25;border-radius:99px;overflow:hidden;margin-bottom:38px}.progress>div{height:100%;background:var(--accent)}
 .result{border:1px solid var(--border);background:var(--panel);border-radius:18px;padding:28px}.result-name{color:var(--accent);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.card-name{font-size:clamp(2rem,7vw,3.8rem);margin:.12em 0}.traits{color:var(--muted);font-size:.92rem}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.secondary{background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:13px 18px;cursor:pointer}
 @media(max-width:520px){main{padding:30px 0}.answer{padding:15px}.result{padding:21px}}
+.brand{display:inline-block;margin-bottom:28px}.brand img{display:block;width:min(240px,65vw);height:auto}
+.answer[aria-pressed="true"]{border-color:var(--accent);background:#302719}.navigation{display:flex;justify-content:space-between;gap:12px}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.card-image{display:block;width:min(100%,420px);height:auto;margin:24px auto}.actions a{text-decoration:none;display:inline-block}
 </style>
 </head>
 <body>
 <main>
+<a class="brand" href="https://bitcoin-ccg.roguesignal.io" aria-label="Visit Bitcoin CCG"><img src="assets/logo.png" alt="Bitcoin CCG"></a>
 <section id="start" class="screen active">
   <div class="eyebrow">Bitcoin CCG Personality Quiz</div>
   <h1>Which Bitcoin CCG Card Are You?</h1>
@@ -29,8 +32,9 @@ p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
 <section id="quiz" class="screen">
   <div class="progress"><div id="bar"></div></div>
   <div class="eyebrow" id="counter"></div>
-  <h2 id="question"></h2>
-  <div class="answers" id="answers"></div>
+  <h2 id="question" tabindex="-1"></h2>
+  <div class="answers" id="answers" role="group" aria-labelledby="question"></div>
+  <div class="navigation"><button id="back" class="secondary" onclick="previousQuestion()">Back</button><button id="next" class="primary" onclick="nextQuestion()" disabled>Next</button></div>
 </section>
 <section id="result" class="screen">
   <div class="result">
@@ -39,8 +43,10 @@ p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
     <h2 id="archetype"></h2>
     <div class="traits" id="traits"></div>
     <p id="description"></p>
+    <img id="cardImage" class="card-image" alt="">
     <div class="actions">
-      <button class="primary" onclick="shareResult()">Share result</button>
+      <a id="explorerLink" class="primary" target="_blank" rel="noopener noreferrer">View in Card Explorer</a>
+      <button class="secondary" onclick="shareResult()">Share result</button>
       <button class="secondary" onclick="restart()">Retake quiz</button>
     </div>
   </div>
@@ -48,14 +54,14 @@ p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
 </main>
 <script>
 const results={
- hacker:{card:"Cypherpunk",archetype:"The Hacker",traits:"Curious · analytical · inventive · inquisitive · self-taught",description:"You need to know how things work. You’re the type to open the settings, read the documentation, or disappear down a rabbit hole because one question turned into twelve. You don’t just want the answer—you want to understand it."},
- independent:{card:"Dustin D. Trammell",archetype:"The Independent",traits:"Self-reliant · unconventional · confident · autonomous · individualistic",description:"You think for yourself and you’re comfortable going against the grain. You’d rather understand your options and choose your own path than do something just because everyone else is doing it."},
- social:{card:"Podcaster",archetype:"The Social Butterfly",traits:"Outgoing · communicative · personable · expressive · welcoming",description:"You collect conversations like other people collect hobbies. You like meeting people, swapping ideas, making introductions, and bringing others into whatever has your attention."},
- explorer:{card:"Pre-Coiner",archetype:"The Explorer",traits:"Curious · open-minded · adventurous · receptive · discovery-driven",description:"“Wait, what’s that?” is how most of your rabbit holes begin. You like discovering new ideas, places, hobbies, and experiences. You don’t need to know exactly where something leads before deciding it’s worth exploring."},
- believer:{card:"Bitcoin Maximalist",archetype:"The True Believer",traits:"Driven · committed · confident · persuasive · persistent · high-conviction",description:"Once you believe in something, you’re in. You commit hard, stand by your decisions, and have a habit of bringing other people along for the ride. Some call it stubbornness. You call it conviction."},
- lucky:{card:"Lucky Hash",archetype:"The Lucky One",traits:"Hopeful · easygoing · positive · trusting · resilient",description:"You have a suspicious amount of faith that things will work themselves out—and somehow, they often do. Bad odds don’t bother you much. There’s always a chance things could go your way."},
- free:{card:"Leavin' Work Early",archetype:"The Free Spirit",traits:"Spontaneous · flexible · instinctive · carefree · adaptable",description:"Plans are useful right up until something more interesting comes along. You’re comfortable changing course, following your gut, and figuring out the details later. Sometimes you just have to call it a day."},
- tinkerer:{card:"Homebrew Trading Script",archetype:"The Tinkerer",traits:"Inventive · experimental · hands-on · playful · resourceful",description:"Why use the standard solution when you could make your own? You like experimenting, modifying, and trying things just to see what happens. Half the fun is figuring it out along the way."}
+ hacker:{card:"Cypherpunk",archetype:"The Hacker",traits:"Curious · analytical · inventive · inquisitive · self-taught",description:"You need to know how things work. You’re the type to open the settings, read the documentation, or disappear down a rabbit hole because one question turned into twelve. You don’t just want the answer, you want to understand it. Like Cypherpunk, curiosity usually leads you somewhere useful."},
+ independent:{card:"Dustin D. Trammell",archetype:"The Independent",traits:"Self-reliant · unconventional · confident · autonomous · individualistic",description:"You think for yourself and you’re comfortable going against the grain. You’d rather understand your options and choose your own path than do something just because everyone else is doing it. The “Opt out, use Bitcoin” energy suits you pretty well."},
+ social:{card:"Podcaster",archetype:"The Social Butterfly",traits:"Outgoing · communicative · personable · expressive · welcoming",description:"You’re basically a human group chat. You like meeting people, swapping ideas, making introductions, and bringing others into whatever has your attention. Fittingly, Podcaster is all about turning an audience of No-Coiners into curious Pre-Coiners."},
+ explorer:{card:"Pre-Coiner",archetype:"The Explorer",traits:"Curious · open-minded · adventurous · receptive · discovery-driven",description:"“Wait, what’s that?” is how most of your rabbit holes begin. You like discovering new ideas, places, hobbies, and experiences. You don’t need to know exactly where something leads before deciding it’s worth exploring. That makes Pre-Coiner a pretty fitting pull. Curiosity has to start somewhere."},
+ believer:{card:"Bitcoin Maximalist",archetype:"The True Believer",traits:"Driven · committed · confident · persuasive · persistent · high-conviction",description:"Once you believe in something, you’re 10 toes down. You commit hard, stand by your decisions, and have a habit of bringing other people along for the ride. Some call it stubbornness. You call it conviction. Bitcoin Maximalist tracks. You’re not exactly known for doing things halfway."},
+ lucky:{card:"Lucky Hash",archetype:"The Lucky One",traits:"Hopeful · easygoing · positive · trusting · resilient",description:"You have a suspicious amount of faith that things will work themselves out... and somehow, they often do. Bad odds don’t bother you much. There’s always a chance things could go your way. Lucky Hash is a fitting pull. Improbable has never meant impossible."},
+ free:{card:"Leavin' Work Early",archetype:"The Free Spirit",traits:"Spontaneous · flexible · instinctive · carefree · adaptable",description:"Plans are useful right up until something shiny comes along. You’re comfortable changing course, following your gut, and figuring out the details later. Leavin’ Work Early gets it. Sometimes the best move is simply calling it a day."},
+ tinkerer:{card:"Homebrew Trading Script",archetype:"The Tinkerer",traits:"Inventive · experimental · hands-on · playful · resourceful",description:"Why use the standard solution when you could make your own? You like experimenting, modifying, and trying things just to see what happens. Half the fun is figuring it out along the way. Of course you got Homebrew Trading Script. You’d rather build the solution yourself."}
 };
 const q=(question,answers)=>({question,answers});
 const a=(text,p,s)=>({text,p,s});
@@ -85,13 +91,43 @@ a("I’m making the reservation. You’re welcome.","independent","believer"),a(
 q("You pick up a new hobby. What happens next?",[
 a("Three hours later, I know an unreasonable amount about it.","hacker","explorer"),a("I immediately start modifying something because I think I can make it better.","tinkerer","hacker"),a("Everyone I know is about to hear about this. Repeatedly.","social","believer"),a("Six months later, I’m still doing it. I may have made this part of my personality.","believer","independent"),a("Immediately buy way too much stuff for it. I live here now.","tinkerer","believer")])
 ];
-let current=0,scores={},primaryCounts={};
+const cardAssets={
+ hacker:["cypherpunk.png","008"],independent:["dustin-d-trammell.png","001"],social:["podcaster.png","011"],explorer:["pre-coiner.png","012"],believer:["bitcoin-maximalist.png","006"],lucky:["lucky-hash.png","094"],free:["leavin-work-early.png","091"],tinkerer:["homebrew-trading-script.png","045"]
+};
+let current=0,scores={},primaryCounts={},selections=Array(questions.length).fill(null);
 function resetScores(){Object.keys(results).forEach(k=>{scores[k]=0;primaryCounts[k]=0})}
 function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active")}
-function startQuiz(){current=0;resetScores();show("quiz");renderQuestion()}
-function renderQuestion(){const item=questions[current];document.getElementById("counter").textContent="Question "+(current+1)+" of "+questions.length;document.getElementById("question").textContent=item.question;document.getElementById("bar").style.width=((current)/questions.length*100)+"%";const box=document.getElementById("answers");box.innerHTML="";item.answers.forEach(ans=>{const b=document.createElement("button");b.className="answer";b.textContent=ans.text;b.onclick=()=>choose(ans);box.appendChild(b)})}
-function choose(ans){scores[ans.p]+=2;scores[ans.s]+=1;primaryCounts[ans.p]++;current++;if(current<questions.length)renderQuestion();else finish()}
+function startQuiz(){current=0;selections=Array(questions.length).fill(null);resetScores();show("quiz");renderQuestion()}
+function renderQuestion(){
+ const item=questions[current];
+ document.getElementById("counter").textContent="Question "+(current+1)+" of "+questions.length;
+ document.getElementById("question").textContent=item.question;
+ document.getElementById("bar").style.width=(current/questions.length*100)+"%";
+ const box=document.getElementById("answers");box.innerHTML="";
+ item.answers.forEach((ans,index)=>{const b=document.createElement("button");b.className="answer";b.textContent=ans.text;b.setAttribute("aria-pressed",String(selections[current]===index));b.onclick=()=>choose(index);box.appendChild(b)});
+ document.getElementById("back").disabled=current===0;
+ document.getElementById("next").disabled=selections[current]===null;
+ document.getElementById("next").textContent=current===questions.length-1?"See my result":"Next";
+ document.getElementById("question").focus();
+}
+function choose(index){
+ if(!Number.isInteger(index)||!questions[current].answers[index])return;
+ selections[current]=index;
+ Array.from(document.getElementById("answers").children).forEach((b,i)=>b.setAttribute("aria-pressed",String(i===index)));
+ document.getElementById("next").disabled=false;
+}
+function previousQuestion(){if(current>0){current--;renderQuestion()}}
+function nextQuestion(){
+ if(selections[current]===null)return;
+ if(current<questions.length-1){current++;renderQuestion()}else finish();
+}
+function calculateScores(){
+ resetScores();
+ selections.forEach((index,i)=>{const ans=questions[i].answers[index];scores[ans.p]+=2;scores[ans.s]+=1;primaryCounts[ans.p]++});
+}
 function finish(){
+  if(selections.some((index,i)=>index===null||!questions[i].answers[index]))return;
+  calculateScores();
   /* Normalize by each archetype's available scoring exposure. This prevents
      archetypes with more mapped opportunities from winning by structure alone. */
   const exposure={hacker:25,independent:19,social:21,explorer:22,believer:28,lucky:18,free:20,tinkerer:23};
@@ -100,7 +136,7 @@ function finish(){
   let tied=Object.keys(adjusted).filter(k=>Math.abs(adjusted[k]-max)<1e-10);
   if(tied.length>1){const pmax=Math.max(...tied.map(k=>primaryCounts[k]));tied=tied.filter(k=>primaryCounts[k]===pmax)}
   const winner=tied[0];const r=results[winner];
-  document.getElementById("cardName").textContent=r.card;document.getElementById("archetype").textContent=r.archetype;document.getElementById("traits").textContent=r.traits;document.getElementById("description").textContent=r.description;show("result")
+  document.getElementById("cardName").textContent=r.card;document.getElementById("archetype").textContent=r.archetype;document.getElementById("traits").textContent=r.traits;document.getElementById("description").textContent=r.description;const image=document.getElementById("cardImage");image.src="assets/"+cardAssets[winner][0];image.alt=r.card+" card";document.getElementById("explorerLink").href="https://explorer.bitcoin-ccg.roguesignal.io/"+cardAssets[winner][1];show("result")
 }
 function restart(){show("start");window.scrollTo({top:0,behavior:"smooth"})}
 async function shareResult(){const card=document.getElementById("cardName").textContent,arch=document.getElementById("archetype").textContent;const text="I got "+card+" — "+arch+" — on the Bitcoin CCG personality quiz.";if(navigator.share){try{await navigator.share({title:"Which Bitcoin CCG Card Are You?",text,url:location.href});return}catch(e){}}try{await navigator.clipboard.writeText(text+" "+location.href);alert("Result copied to clipboard.")}catch(e){alert(text)}}
