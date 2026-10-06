@@ -39,7 +39,7 @@ p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
   <div class="eyebrow" id="counter"></div>
   <h2 id="question" tabindex="-1"></h2>
   <div class="answers" id="answers" role="group" aria-labelledby="question"></div>
-  <div class="navigation"><button id="back" class="secondary" onclick="previousQuestion()">Back</button><button id="next" class="primary" onclick="nextQuestion()" disabled>Next</button></div>
+  <div class="navigation"><button id="back" class="secondary" onclick="previousQuestion()" aria-label="Previous question">←</button><button id="next" class="primary" onclick="nextQuestion()" aria-label="Next question" disabled>→</button></div>
 </section>
 <section id="result" class="screen">
   <div class="result">
@@ -119,7 +119,8 @@ function renderQuestion(){
  item.answers.forEach((ans,index)=>{const b=document.createElement("button");b.className="answer";b.textContent=ans.text;b.setAttribute("aria-pressed",String(selections[current]===index));b.onclick=()=>choose(index);box.appendChild(b)});
  document.getElementById("back").disabled=current===0;
  document.getElementById("next").disabled=selections[current]===null;
- document.getElementById("next").textContent=current===questions.length-1?"See my result":"Next";
+ document.getElementById("next").textContent=current===questions.length-1?"See my result":"→";
+ document.getElementById("next").setAttribute("aria-label",current===questions.length-1?"See my result":"Next question");
  document.getElementById("question").focus();
 }
 function choose(index){
