@@ -1,171 +1,1271 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Which Bitcoin CCG Card Are You?</title>
-<style>
-@font-face{font-family:"Minion Pro";src:url("assets/fonts/MinionPro-Semibold.otf") format("opentype");font-weight:600;font-style:normal;font-display:swap}
-@font-face{font-family:"Minion Pro";src:url("assets/fonts/MinionPro-Bold.otf") format("opentype");font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:"Germania One";src:url("assets/fonts/GermaniaOne-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:"Minion Pro";src:url("assets/fonts/MinionPro-Regular.otf") format("opentype");font-weight:400;font-style:normal;font-display:swap}
-:root{--bg:#10110f;--panel:#191b17;--text:#f3f0e8;--muted:#aaa99f;--accent:#f7931a;--border:#373a31}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Minion Pro",Georgia,serif;min-height:100vh}
-h1,h2,h3,h4,h5,h6,.card-name,.eyebrow,.result-name{font-family:"Germania One",system-ui,sans-serif;font-synthesis:none}
-main{width:min(760px,92vw);margin:auto;padding:48px 0}.screen{display:none}.screen.active{display:block}
-.eyebrow{color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:.78rem}
-h1{font-size:clamp(2.2rem,7vw,4.6rem);line-height:.96;margin:.25em 0}h2{font-size:clamp(1.7rem,5vw,2.7rem);line-height:1.1}
-p{line-height:1.6}.muted{color:var(--muted)}button{font:inherit}
-.primary{font-size:20px;background:var(--accent);color:#111;border:0;border-radius:10px;padding:14px 22px;font-weight:800;cursor:pointer}
-.answers{display:grid;gap:12px;margin:28px 0}.answer{font-size:20px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:17px 18px;text-align:left;cursor:pointer;line-height:1.4}.answer:hover{border-color:var(--accent);transform:translateY(-1px)}
-.progress{height:6px;background:#292b25;border-radius:99px;overflow:hidden;margin-bottom:38px}.progress>div{height:100%;background:var(--accent)}
-.result,.content-panel{border:1px solid var(--border);background:var(--panel);border-radius:18px;padding:28px}.result-name{color:var(--accent);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.card-name{font-size:clamp(2rem,7vw,3.8rem);margin:.12em 0}.traits{color:#FE9638;font-size:20px;line-height:1.5}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.secondary{font-size:20px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:13px 18px;cursor:pointer}
-@media(max-width:520px){main{padding:30px 0}.answer{padding:15px}.result,.content-panel{padding:21px}}
-.brand-footer{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;justify-content:center;padding:12px 0 calc(12px + env(safe-area-inset-bottom));background:transparent;pointer-events:none}.brand{display:inline-block;pointer-events:auto}.brand img{display:block;width:min(200px,55vw);height:auto;max-height:80px;object-fit:contain}main{padding-bottom:calc(128px + env(safe-area-inset-bottom))}
-.answer[aria-pressed="true"]{border-color:var(--accent);background:#302719}.navigation{display:flex;justify-content:space-between;gap:12px}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.result-header{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:24px;align-items:start}.result-heading{min-width:0}.result-card{display:flex;flex-direction:column;align-items:center;gap:14px}.card-image{display:block;width:100%;height:auto;margin:0}.result-card a{text-decoration:none;text-align:center;width:100%;font-size:20px}.result-heading .card-name{font-size:clamp(2rem,4.5vw,3rem)}.actions a{text-decoration:none;display:inline-block}
-@media(max-width:600px){.result-header{grid-template-columns:1fr}.result-card{width:min(100%,300px);justify-self:center}.result-heading .card-name{font-size:clamp(2rem,7vw,3rem)}}
-.result-heading .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:min(100%,270px);gap:10px;margin-top:0}.result-heading .actions button{width:100%;padding:10px 6px;font-size:16px}
-#start .eyebrow,#counter,.result-name{font-family:"Minion Pro",Georgia,serif;font-weight:600;font-synthesis:none}.result-heading #archetype{font-family:"Minion Pro",Georgia,serif;font-weight:700;margin-bottom:8px}
-#start p{font-size:20px}.button-icon{width:1em;height:1em;flex-shrink:0}.result-card #explorerLink,.result-heading .actions button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
-#description{font-size:20px}
-.result-heading .actions button{border-color:#FE9638}
-@media(min-width:900px){main{width:calc(100% / 3 * 2)}}
-#question {
-  font-family: "cinder", Georgia, serif;
-  font-weight: 400;
-  font-style: normal;
-}
-</style>
-<link rel="stylesheet" href="https://use.typekit.net/cmu3cua.css">
-</head>
-<body>
-<main>
-<section id="start" class="screen active content-panel">
-  <div class="eyebrow">Bitcoin CCG Personality Quiz</div>
-  <h1>Which Bitcoin CCG Card Are You?</h1>
-  <p>Answer 12 extremely scientific questions. We'll tell you which card matches your particular brand of decision-making.</p>
-  <button class="primary" onclick="startQuiz()">Take the quiz</button>
-</section>
-<section id="quiz" class="screen content-panel">
-  <div class="progress"><div id="bar"></div></div>
-  <div class="eyebrow" id="counter"></div>
-  <h2 id="question" tabindex="-1"></h2>
-  <div class="answers" id="answers" role="group" aria-labelledby="question"></div>
-  <div class="navigation"><button id="back" class="secondary" onclick="previousQuestion()" aria-label="Previous question">←</button><button id="next" class="primary" onclick="nextQuestion()" aria-label="Next question" disabled>→</button></div>
-</section>
-<section id="result" class="screen">
-  <div class="result">
-    <div class="result-header">
-      <div class="result-heading">
-        <div class="result-name">You are</div>
-        <div class="card-name" id="cardName"></div>
-        <h2 id="archetype"></h2>
-        <div class="traits" id="traits"></div>
-        <p id="description"></p>
-        <div class="actions">
-          <button class="secondary" onclick="shareResult()"><svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/></svg><span>Share result</span></button>
-          <button class="secondary" onclick="restart()"><svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 10a9 9 0 1 1 2.5 8M3 4v6h6"/></svg><span>Retake quiz</span></button>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Which Bitcoin CCG Card Are You?</title>
+    <style>
+      /* Fonts */
+      @font-face {
+        font-family: "Minion Pro";
+        src: url("assets/fonts/MinionPro-Semibold.otf") format("opentype");
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Minion Pro";
+        src: url("assets/fonts/MinionPro-Bold.otf") format("opentype");
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Germania One";
+        src: url("assets/fonts/GermaniaOne-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Minion Pro";
+        src: url("assets/fonts/MinionPro-Regular.otf") format("opentype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      
+      /* Colors and base styles */
+
+      :root {
+        --bg: #10110f;
+        --panel: #191b17;
+        --text: #f3f0e8;
+        --muted: #aaa99f;
+        --accent: #f7931a;
+        --border: #373a31;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Minion Pro", Georgia, serif;
+        min-height: 100vh;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      .card-name,
+      .eyebrow,
+      .result-name {
+        font-family: "Germania One", system-ui, sans-serif;
+        font-synthesis: none;
+      }
+
+      main {
+        width: min(760px, 92vw);
+        margin: auto;
+        padding: 48px 0;
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .eyebrow {
+        color: var(--accent);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .12em;
+        font-size: .78rem;
+      }
+
+      h1 {
+        font-size: clamp(2.2rem, 7vw, 4.6rem);
+        line-height: .96;
+        margin: .25em 0;
+      }
+
+      h2 {
+        font-size: clamp(1.7rem, 5vw, 2.7rem);
+        line-height: 1.1;
+      }
+
+      p {
+        line-height: 1.6;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      button {
+        font: inherit;
+      }
+
+      /* Buttons and answers */
+
+      .primary {
+        font-size: 20px;
+        background: var(--accent);
+        color: #111;
+        border: 0;
+        border-radius: 10px;
+        padding: 14px 22px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .answers {
+        display: grid;
+        gap: 12px;
+        margin: 28px 0;
+      }
+
+      .answer {
+        font-size: 20px;
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 17px 18px;
+        text-align: left;
+        cursor: pointer;
+        line-height: 1.4;
+      }
+
+      .answer:hover {
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+
+      /* Progress bar */
+
+      .progress {
+        height: 6px;
+        background: #292b25;
+        border-radius: 99px;
+        overflow: hidden;
+        margin-bottom: 38px;
+      }
+
+      .progress > div {
+        height: 100%;
+        background: var(--accent);
+      }
+
+      /* Panels and results */
+
+      .result,
+      .content-panel {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        border-radius: 18px;
+        padding: 28px;
+      }
+
+      .result-name {
+        color: var(--accent);
+        font-size: 1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+      }
+
+      .card-name {
+        font-size: clamp(2rem, 7vw, 3.8rem);
+        margin: .12em 0;
+      }
+
+      .traits {
+        color: #FE9638;
+        font-size: 20px;
+        line-height: 1.5;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 24px;
+      }
+
+      .secondary {
+        font-size: 20px;
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 13px 18px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 520px) {
+        main {
+          padding: 30px 0;
+        }
+
+        .answer {
+          padding: 15px;
+        }
+
+        .result,
+        .content-panel {
+          padding: 21px;
+        }
+      }
+
+      /* Logo footer */
+
+      .brand-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+        background: transparent;
+        pointer-events: none;
+      }
+
+      .brand {
+        display: inline-block;
+        pointer-events: auto;
+      }
+
+      .brand img {
+        display: block;
+        width: min(200px, 55vw);
+        height: auto;
+        max-height: 80px;
+        object-fit: contain;
+      }
+
+      main {
+        padding-bottom: calc(128px + env(safe-area-inset-bottom));
+      }
+
+      /* Selection, navigation, and accessibility */
+
+      .answer[aria-pressed="true"] {
+        border-color: var(--accent);
+        background: #302719;
+      }
+
+      .navigation {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      button:disabled {
+        opacity: .45;
+        cursor: not-allowed;
+      }
+
+      button:focus-visible,
+      a:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 4px;
+      }
+
+      /* Result layout */
+
+      .result-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 270px;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .result-heading {
+        min-width: 0;
+      }
+
+      .result-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .card-image {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 0;
+      }
+
+      .result-card a {
+        text-decoration: none;
+        text-align: center;
+        width: 100%;
+        font-size: 20px;
+      }
+
+      .result-heading .card-name {
+        font-size: clamp(2rem, 4.5vw, 3rem);
+      }
+
+      .actions a {
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      @media (max-width: 600px) {
+        .result-header {
+          grid-template-columns: 1fr;
+        }
+
+        .result-card {
+          width: min(100%, 300px);
+          justify-self: center;
+        }
+
+        .result-heading .card-name {
+          font-size: clamp(2rem, 7vw, 3rem);
+        }
+      }
+
+      .result-heading .actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: min(100%, 270px);
+        gap: 10px;
+        margin-top: 0;
+      }
+
+      .result-heading .actions button {
+        width: 100%;
+        padding: 10px 6px;
+        font-size: 16px;
+      }
+
+      /* Text and icon adjustments */
+
+      #start .eyebrow,
+      #counter,
+      .result-name {
+        font-family: "Minion Pro", Georgia, serif;
+        font-weight: 600;
+        font-synthesis: none;
+      }
+
+      .result-heading #archetype {
+        font-family: "Minion Pro", Georgia, serif;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      #start p {
+        font-size: 20px;
+      }
+
+      .button-icon {
+        width: 1em;
+        height: 1em;
+        flex-shrink: 0;
+      }
+
+      .result-card #explorerLink,
+      .result-heading .actions button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      #description {
+        font-size: 20px;
+      }
+
+      .result-heading .actions button {
+        border-color: #FE9638;
+      }
+
+      @media (min-width: 900px) {
+        main {
+          width: calc(100% / 3 * 2);
+        }
+      }
+
+      /* Cinder font for quiz questions */
+
+      #question {
+        font-family: "cinder", Georgia, serif;
+        font-weight: 400;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://use.typekit.net/cmu3cua.css">
+  </head>
+
+  <body>
+    <main>
+      <!-- Start screen -->
+
+      <section id="start" class="screen active content-panel">
+        <div class="eyebrow">Bitcoin CCG Quiz</div>
+
+        <h1>Which Bitcoin CCG Card Are You?</h1>
+
+        <p>
+          Answer 12 extremely scientific questions. We'll tell you which card
+          matches your particular brand of decision-making.
+        </p>
+
+        <button class="primary" onclick="startQuiz()">
+          Take the quiz
+        </button>
+      </section>
+
+      <!-- Quiz screen -->
+
+      <section id="quiz" class="screen content-panel">
+        <div class="progress">
+          <div id="bar"></div>
         </div>
-      </div>
-      <div class="result-card">
-        <img id="cardImage" class="card-image" alt="">
-        <a id="explorerLink" class="primary" target="_blank" rel="noopener noreferrer"><svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg><span>View Card Database</span></a>
-      </div>
-    </div>
-  </div>
-</section>
-<footer class="brand-footer"><a class="brand" href="https://bitcoin-ccg.roguesignal.io" aria-label="Visit Bitcoin CCG"><img src="assets/logo.png?v=eec0ac5b55a3" alt="Bitcoin CCG"></a></footer>
-</main>
-<script>
-const results={
- hacker:{card:"Cypherpunk",archetype:"The Hacker",traits:"Curious · Analytical · Inventive · Inquisitive · Self-Taught",description:"You need to know how things work. You’re the type to open the settings, read the documentation, or disappear down a rabbit hole because one question turned into twelve. You don’t just want the answer, you want to understand it. Like Cypherpunk, curiosity usually leads you somewhere useful."},
- independent:{card:"Dustin D. Trammell",archetype:"The Independent",traits:"Self-Reliant · Unconventional · Confident · Autonomous · Individualistic",description:"You think for yourself and you’re comfortable going against the grain. You’d rather understand your options and choose your own path than do something just because everyone else is doing it. The “Opt out, use Bitcoin” energy suits you pretty well."},
- social:{card:"Podcaster",archetype:"The Social Butterfly",traits:"Outgoing · Communicative · Personable · Expressive · Welcoming",description:"You’re basically a human group chat. You like meeting people, swapping ideas, making introductions, and bringing others into whatever has your attention. Fittingly, Podcaster is all about turning an audience of No-Coiners into curious Pre-Coiners."},
- explorer:{card:"Pre-Coiner",archetype:"The Explorer",traits:"Curious · Open-Minded · Adventurous · Receptive · Discovery-Driven",description:"“Wait, what’s that?” is how most of your rabbit holes begin. You like discovering new ideas, places, hobbies, and experiences. You don’t need to know exactly where something leads before deciding it’s worth exploring. That makes Pre-Coiner a pretty fitting pull. Curiosity has to start somewhere."},
- believer:{card:"Bitcoin Maximalist",archetype:"The True Believer",traits:"Driven · Committed · Confident · Persuasive · Persistent · High-Conviction",description:"Once you believe in something, you’re 10 toes down. You commit hard, stand by your decisions, and have a habit of bringing other people along for the ride. Some call it stubbornness. You call it conviction. Bitcoin Maximalist tracks. You’re not exactly known for doing things halfway."},
- lucky:{card:"Lucky Hash",archetype:"The Lucky One",traits:"Hopeful · Easygoing · Positive · Trusting · Resilient",description:"You have a suspicious amount of faith that things will work themselves out... and somehow, they often do. Bad odds don’t bother you much. There’s always a chance things could go your way. Lucky Hash is a fitting pull. Improbable has never meant impossible."},
- free:{card:"Leavin' Work Early",archetype:"The Free Spirit",traits:"Spontaneous · Flexible · Instinctive · Carefree · Adaptable",description:"Plans are useful right up until something shiny comes along. You’re comfortable changing course, following your gut, and figuring out the details later. Leavin’ Work Early gets it. Sometimes the best move is simply calling it a day."},
- tinkerer:{card:"Homebrew Trading Script",archetype:"The Tinkerer",traits:"Inventive · Experimental · Hands-On · Playful · Resourceful",description:"Why use the standard solution when you could make your own? You like experimenting, modifying, and trying things just to see what happens. Half the fun is figuring it out along the way. Of course you got Homebrew Trading Script. You’d rather build the solution yourself."}
-};
-const q=(question,answers)=>({question,answers});
-const a=(text,p,s)=>({text,p,s});
-const questions=[
-q("You suddenly have an entire Saturday with no plans. What happens?",[
-a("Finally. Time to disappear into a rabbit hole I’ve been meaning to investigate.","hacker","explorer"),a("Text the group chat. Somebody has to be doing something.","social","free"),a("I’ll figure it out when I get there. That’s the beauty of it.","free","lucky"),a("I already have three ideas and I’m weirdly excited about all of them.","tinkerer","explorer"),a("Start the thing I’ve been saying I’d get around to for months.","believer","independent")]),
-q("Something breaks. What’s your first move?",[
-a("Take it apart. Worst case, I learn something.","tinkerer","hacker"),a("Research exactly what went wrong before touching anything.","hacker","independent"),a("Give it a minute. Sometimes these things just fix themselves.","lucky","free"),a("Try turning it off and back on. That works way more often than it should.","lucky","tinkerer"),a("Fix it myself. I’m not calling someone unless I absolutely have to.","independent","tinkerer")]),
-q("You’re on a road trip and see a sign for a bizarre roadside attraction.",[
-a("Pull over. Obviously. When are we ever going to be here again?","explorer","free"),a("Look it up first. If it seems worth the detour, I’m in.","explorer","hacker"),a("Nope, we have a schedule to keep.","independent","believer"),a("I could take it or leave it. If others want to stop, sure.","social","free"),a("Absolutely. And I’m convincing everyone else it’ll be worth it.","believer","social")]),
-q("You’re losing a game. What’s the strategy?",[
-a("Recalculate. There’s still a path to victory.","believer","hacker"),a("Double down. We did not come this far to become cowards.","believer","independent"),a("Try something nobody at the table is expecting.","tinkerer","free"),a("Start hyping up the comeback. Morale matters.","social","believer"),a("Honestly? I have a weird feeling we’re about to pull this off.","lucky","believer")]),
-q("Group project. Who are you?",[
-a("Somehow, I’m in charge now.","believer","independent"),a("Keeping everyone talking and making sure nobody gets left out.","social","explorer"),a("Just give me my part. I work better on my own.","independent","believer"),a("“Okay, but what if we did it like this instead?”","tinkerer","explorer"),a("Volunteer for the part I’ve never done before. Might as well learn something.","explorer","hacker")]),
-q("You’re assembling furniture and realize you skipped three steps.",[
-a("Ignore the instructions. I can figure this out myself.","independent","tinkerer"),a("Keep going. We’ve committed to this version now.","believer","free"),a("If it’s standing, we’re done here.","free","lucky"),a("How important could those three steps possibly be?","lucky","free"),a("Look up the instructions and figure out exactly where I went wrong.","hacker","believer")]),
-q("There’s a 1% chance this works.",[
-a("So you’re saying there’s a chance.","lucky","believer"),a("What happens if it doesn’t work?","hacker","independent"),a("Worst case, we get a good story out of it.","free","lucky"),a("I’m already doing it.","free","independent"),a("Okay, but hear me out—I think I can make this work.","tinkerer","lucky")]),
-q("You walk into a party where you know exactly one person.",[
-a("Twenty minutes later, I somehow know everyone.","social","explorer"),a("Find the person having the most interesting conversation.","explorer","hacker"),a("Find my people and stay there all night.","believer","social"),a("End up convincing several people to do something after the party.","social","believer"),a("Introduce myself to whoever looks like they’re having the most fun.","social","explorer")]),
-q("Someone confidently says something you think is completely wrong.",[
-a("I need to know why they think that.","hacker","explorer"),a("Oh, we’re discussing this. Immediately.","believer","hacker"),a("They can think whatever they want. I know where I stand.","independent","believer"),a("Maybe I’m wrong. Time to investigate.","hacker","explorer"),a("Let them finish. Maybe I’m about to learn something weird.","explorer","hacker")]),
-q("You get handed a box of random junk and told to make something useful.",[
-a("Best assignment I’ve had all week.","tinkerer","explorer"),a("First, inventory everything and figure out what we can actually make.","hacker","tinkerer"),a("Grab something and start. I’m sure inspiration will strike eventually.","lucky","free"),a("Wait, I actually have a GREAT idea.","tinkerer","lucky")]),
-q("The group chat has spent 45 minutes trying to decide where to eat.",[
-a("I’m making the reservation. You’re welcome.","independent","believer"),a("Okay, everyone send your top two. I’ll figure this out.","social","hacker"),a("I genuinely do not care. Someone just tell me where to be.","free","social"),a("Wait—I know a place none of you have tried.","explorer","social"),a("Pick somewhere. If it sucks, we’ll go somewhere else.","free","lucky")]),
-q("You pick up a new hobby. What happens next?",[
-a("Three hours later, I know an unreasonable amount about it.","hacker","explorer"),a("I immediately start modifying something because I think I can make it better.","tinkerer","hacker"),a("Everyone I know is about to hear about this. Repeatedly.","social","believer"),a("Six months later, I’m still doing it. I may have made this part of my personality.","believer","independent"),a("Immediately buy way too much stuff for it. I live here now.","tinkerer","believer")])
-];
-const cardAssets={
- hacker:["cypherpunk.png","008"],independent:["dustin-d-trammell.png","001"],social:["podcaster.png","011"],explorer:["pre-coiner.png","012"],believer:["bitcoin-maximalist.png","006"],lucky:["lucky-hash.png","094"],free:["leavin-work-early.png","091"],tinkerer:["homebrew-trading-script.png","045"]
-};
-let current=0,scores={},primaryCounts={},selections=Array(questions.length).fill(null);
-function resetScores(){Object.keys(results).forEach(k=>{scores[k]=0;primaryCounts[k]=0})}
-function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active")}
-function startQuiz(){current=0;selections=Array(questions.length).fill(null);resetScores();show("quiz");renderQuestion()}
-function renderQuestion(){
- const item=questions[current];
- document.getElementById("counter").textContent="Question "+(current+1)+" of "+questions.length;
- document.getElementById("question").textContent=item.question;
- document.getElementById("bar").style.width=(current/questions.length*100)+"%";
- const box=document.getElementById("answers");box.innerHTML="";
- item.answers.forEach((ans,index)=>{const b=document.createElement("button");b.className="answer";b.textContent=ans.text;b.setAttribute("aria-pressed",String(selections[current]===index));b.onclick=()=>choose(index);box.appendChild(b)});
- document.getElementById("back").disabled=current===0;
- document.getElementById("next").disabled=selections[current]===null;
- document.getElementById("next").textContent=current===questions.length-1?"See my result":"→";
- document.getElementById("next").setAttribute("aria-label",current===questions.length-1?"See my result":"Next question");
- document.getElementById("question").focus();
-}
-function choose(index){
- if(!Number.isInteger(index)||!questions[current].answers[index])return;
- selections[current]=index;
- Array.from(document.getElementById("answers").children).forEach((b,i)=>b.setAttribute("aria-pressed",String(i===index)));
- document.getElementById("next").disabled=false;
-}
-function previousQuestion(){if(current>0){current--;renderQuestion()}}
-function nextQuestion(){
- if(selections[current]===null)return;
- if(current<questions.length-1){current++;renderQuestion()}else finish();
-}
-function calculateScores(){
- resetScores();
- selections.forEach((index,i)=>{const ans=questions[i].answers[index];scores[ans.p]+=2;scores[ans.s]+=1;primaryCounts[ans.p]++});
-}
-function finish(){
-  if(selections.some((index,i)=>index===null||!questions[i].answers[index]))return;
-  calculateScores();
-  /* Normalize by each archetype's available scoring exposure. This prevents
-     archetypes with more mapped opportunities from winning by structure alone. */
-  const exposure={hacker:25,independent:19,social:21,explorer:22,believer:28,lucky:18,free:20,tinkerer:23};
-  const adjusted={};Object.keys(scores).forEach(k=>adjusted[k]=scores[k]/exposure[k]);
-  const max=Math.max(...Object.values(adjusted));
-  let tied=Object.keys(adjusted).filter(k=>Math.abs(adjusted[k]-max)<1e-10);
-  if(tied.length>1){const pmax=Math.max(...tied.map(k=>primaryCounts[k]));tied=tied.filter(k=>primaryCounts[k]===pmax)}
-  const winner=tied[0];const r=results[winner];
-  document.getElementById("cardName").textContent=r.card;document.getElementById("archetype").textContent=r.archetype;document.getElementById("traits").textContent=r.traits;document.getElementById("description").textContent=r.description;const image=document.getElementById("cardImage");image.src="assets/"+cardAssets[winner][0];image.alt=r.card+" card";document.getElementById("explorerLink").href="https://explorer.bitcoin-ccg.roguesignal.io/"+cardAssets[winner][1];show("result")
-}
-function restart(){show("start");window.scrollTo({top:0,behavior:"smooth"})}
-async function shareResult(){const card=document.getElementById("cardName").textContent,arch=document.getElementById("archetype").textContent;const text="I got "+card+" — "+arch+" — on the Bitcoin CCG personality quiz.";if(navigator.share){try{await navigator.share({title:"Which Bitcoin CCG Card Are You?",text,url:location.href});return}catch(e){}}try{await navigator.clipboard.writeText(text+" "+location.href);alert("Result copied to clipboard.")}catch(e){alert(text)}}
-resetScores();
-</script>
-</body>
+
+        <div class="eyebrow" id="counter"></div>
+
+        <h2 id="question" tabindex="-1"></h2>
+
+        <div
+          class="answers"
+          id="answers"
+          role="group"
+          aria-labelledby="question"
+        ></div>
+
+        <div class="navigation">
+          <button
+            id="back"
+            class="secondary"
+            onclick="previousQuestion()"
+            aria-label="Previous question"
+          >
+            ←
+          </button>
+
+          <button
+            id="next"
+            class="primary"
+            onclick="nextQuestion()"
+            aria-label="Next question"
+            disabled
+          >
+            →
+          </button>
+        </div>
+      </section>
+
+      <!-- Result screen -->
+
+      <section id="result" class="screen">
+        <div class="result">
+          <div class="result-header">
+            <div class="result-heading">
+              <div class="result-name">You are</div>
+              <div class="card-name" id="cardName"></div>
+
+              <h2 id="archetype"></h2>
+
+              <div class="traits" id="traits"></div>
+
+              <p id="description"></p>
+
+              <div class="actions">
+                <button class="secondary" onclick="shareResult()">
+                  <svg
+                    class="button-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <circle cx="18" cy="5" r="3"/>
+                    <circle cx="6" cy="12" r="3"/>
+                    <circle cx="18" cy="19" r="3"/>
+                    <path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/>
+                  </svg>
+
+                  <span>Share result</span>
+                </button>
+
+                <button class="secondary" onclick="restart()">
+                  <svg
+                    class="button-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d="M3 10a9 9 0 1 1 2.5 8M3 4v6h6"/>
+                  </svg>
+
+                  <span>Retake quiz</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <img id="cardImage" class="card-image" alt="">
+
+              <a
+                id="explorerLink"
+                class="primary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg
+                  class="button-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+
+                <span>View Card Database</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Brand footer -->
+
+      <footer class="brand-footer">
+        <a
+          class="brand"
+          href="https://bitcoin-ccg.roguesignal.io"
+          aria-label="Visit Bitcoin CCG"
+        >
+          <img
+            src="assets/logo.png?v=eec0ac5b55a3"
+            alt="Bitcoin CCG"
+          >
+        </a>
+      </footer>
+    </main>
+
+    <script>
+      // Result descriptions
+
+      const results = {
+        hacker: {
+          card: "Cypherpunk",
+          archetype: "The Hacker",
+          traits: "Curious · Analytical · Inventive · Inquisitive · Self-Taught",
+          description: "You need to know how things work. You’re the type to open the settings, read the documentation, or disappear down a rabbit hole because one question turned into twelve. You don’t just want the answer, you want to understand it. Like Cypherpunk, curiosity usually leads you somewhere useful."
+        },
+
+        independent: {
+          card: "Dustin D. Trammell",
+          archetype: "The Independent",
+          traits: "Self-Reliant · Unconventional · Confident · Autonomous · Individualistic",
+          description: "You think for yourself and you’re comfortable going against the grain. You’d rather understand your options and choose your own path than do something just because everyone else is doing it. The “Opt out, use Bitcoin” energy suits you pretty well."
+        },
+
+        social: {
+          card: "Podcaster",
+          archetype: "The Social Butterfly",
+          traits: "Outgoing · Communicative · Personable · Expressive · Welcoming",
+          description: "You’re basically a human group chat. You like meeting people, swapping ideas, making introductions, and bringing others into whatever has your attention. Fittingly, Podcaster is all about turning an audience of No-Coiners into curious Pre-Coiners."
+        },
+
+        explorer: {
+          card: "Pre-Coiner",
+          archetype: "The Explorer",
+          traits: "Curious · Open-Minded · Adventurous · Receptive · Discovery-Driven",
+          description: "“Wait, what’s that?” is how most of your rabbit holes begin. You like discovering new ideas, places, hobbies, and experiences. You don’t need to know exactly where something leads before deciding it’s worth exploring. That makes Pre-Coiner a pretty fitting pull. Curiosity has to start somewhere."
+        },
+
+        believer: {
+          card: "Bitcoin Maximalist",
+          archetype: "The True Believer",
+          traits: "Driven · Committed · Confident · Persuasive · Persistent · High-Conviction",
+          description: "Once you believe in something, you’re 10 toes down. You commit hard, stand by your decisions, and have a habit of bringing other people along for the ride. Some call it stubbornness. You call it conviction. Bitcoin Maximalist tracks. You’re not exactly known for doing things halfway."
+        },
+
+        lucky: {
+          card: "Lucky Hash",
+          archetype: "The Lucky One",
+          traits: "Hopeful · Easygoing · Positive · Trusting · Resilient",
+          description: "You have a suspicious amount of faith that things will work themselves out... and somehow, they often do. Bad odds don’t bother you much. There’s always a chance things could go your way. Lucky Hash is a fitting pull. Improbable has never meant impossible."
+        },
+
+        free: {
+          card: "Leavin' Work Early",
+          archetype: "The Free Spirit",
+          traits: "Spontaneous · Flexible · Instinctive · Carefree · Adaptable",
+          description: "Plans are useful right up until something shiny comes along. You’re comfortable changing course, following your gut, and figuring out the details later. Leavin’ Work Early gets it. Sometimes the best move is simply calling it a day."
+        },
+
+        tinkerer: {
+          card: "Homebrew Trading Script",
+          archetype: "The Tinkerer",
+          traits: "Inventive · Experimental · Hands-On · Playful · Resourceful",
+          description: "Why use the standard solution when you could make your own? You like experimenting, modifying, and trying things just to see what happens. Half the fun is figuring it out along the way. Of course you got Homebrew Trading Script. You’d rather build the solution yourself."
+        }
+      };
+
+      // Question and answer helpers
+
+      const q = (question, answers) => ({ question, answers });
+      const a = (text, p, s) => ({ text, p, s });
+
+      // Quiz questions and scoring assignments
+
+      const questions = [
+        q(
+          "You suddenly have an entire Saturday with no plans. What happens?",
+          [
+            a(
+              "Finally. Time to disappear into a rabbit hole I’ve been meaning to investigate.",
+              "hacker",
+              "explorer"
+            ),
+            a(
+              "Text the group chat. Somebody has to be doing something.",
+              "social",
+              "free"
+            ),
+            a(
+              "I’ll figure it out when I get there. That’s the beauty of it.",
+              "free",
+              "lucky"
+            ),
+            a(
+              "I already have three ideas and I’m weirdly excited about all of them.",
+              "tinkerer",
+              "explorer"
+            ),
+            a(
+              "Start the thing I’ve been saying I’d get around to for months.",
+              "believer",
+              "independent"
+            )
+          ]
+        ),
+
+        q("Something breaks. What’s your first move?", [
+          a(
+            "Take it apart. Worst case, I learn something.",
+            "tinkerer",
+            "hacker"
+          ),
+          a(
+            "Research exactly what went wrong before touching anything.",
+            "hacker",
+            "independent"
+          ),
+          a(
+            "Give it a minute. Sometimes these things just fix themselves.",
+            "lucky",
+            "free"
+          ),
+          a(
+            "Try turning it off and back on. That works way more often than it should.",
+            "lucky",
+            "tinkerer"
+          ),
+          a(
+            "Fix it myself. I’m not calling someone unless I absolutely have to.",
+            "independent",
+            "tinkerer"
+          )
+        ]),
+
+        q(
+          "You’re on a road trip and see a sign for a bizarre roadside attraction.",
+          [
+            a(
+              "Pull over. Obviously. When are we ever going to be here again?",
+              "explorer",
+              "free"
+            ),
+            a(
+              "Look it up first. If it seems worth the detour, I’m in.",
+              "explorer",
+              "hacker"
+            ),
+            a(
+              "Nope, we have a schedule to keep.",
+              "independent",
+              "believer"
+            ),
+            a(
+              "I could take it or leave it. If others want to stop, sure.",
+              "social",
+              "free"
+            ),
+            a(
+              "Absolutely. And I’m convincing everyone else it’ll be worth it.",
+              "believer",
+              "social"
+            )
+          ]
+        ),
+
+        q("You’re losing a game. What’s the strategy?", [
+          a(
+            "Recalculate. There’s still a path to victory.",
+            "believer",
+            "hacker"
+          ),
+          a(
+            "Double down. We did not come this far to become cowards.",
+            "believer",
+            "independent"
+          ),
+          a(
+            "Try something nobody at the table is expecting.",
+            "tinkerer",
+            "free"
+          ),
+          a(
+            "Start hyping up the comeback. Morale matters.",
+            "social",
+            "believer"
+          ),
+          a(
+            "Honestly? I have a weird feeling we’re about to pull this off.",
+            "lucky",
+            "believer"
+          )
+        ]),
+
+        q("Group project. Who are you?", [
+          a(
+            "Somehow, I’m in charge now.",
+            "believer",
+            "independent"
+          ),
+          a(
+            "Keeping everyone talking and making sure nobody gets left out.",
+            "social",
+            "explorer"
+          ),
+          a(
+            "Just give me my part. I work better on my own.",
+            "independent",
+            "believer"
+          ),
+          a(
+            "“Okay, but what if we did it like this instead?”",
+            "tinkerer",
+            "explorer"
+          ),
+          a(
+            "Volunteer for the part I’ve never done before. Might as well learn something.",
+            "explorer",
+            "hacker"
+          )
+        ]),
+
+        q(
+          "You’re assembling furniture and realize you skipped three steps.",
+          [
+            a(
+              "Ignore the instructions. I can figure this out myself.",
+              "independent",
+              "tinkerer"
+            ),
+            a(
+              "Keep going. We’ve committed to this version now.",
+              "believer",
+              "free"
+            ),
+            a(
+              "If it’s standing, we’re done here.",
+              "free",
+              "lucky"
+            ),
+            a(
+              "How important could those three steps possibly be?",
+              "lucky",
+              "free"
+            ),
+            a(
+              "Look up the instructions and figure out exactly where I went wrong.",
+              "hacker",
+              "believer"
+            )
+          ]
+        ),
+
+        q("There’s a 1% chance this works.", [
+          a(
+            "So you’re saying there’s a chance.",
+            "lucky",
+            "believer"
+          ),
+          a(
+            "What happens if it doesn’t work?",
+            "hacker",
+            "independent"
+          ),
+          a(
+            "Worst case, we get a good story out of it.",
+            "free",
+            "lucky"
+          ),
+          a(
+            "I’m already doing it.",
+            "free",
+            "independent"
+          ),
+          a(
+            "Okay, but hear me out—I think I can make this work.",
+            "tinkerer",
+            "lucky"
+          )
+        ]),
+
+        q(
+          "You walk into a party where you know exactly one person.",
+          [
+            a(
+              "Twenty minutes later, I somehow know everyone.",
+              "social",
+              "explorer"
+            ),
+            a(
+              "Find the person having the most interesting conversation.",
+              "explorer",
+              "hacker"
+            ),
+            a(
+              "Find my people and stay there all night.",
+              "believer",
+              "social"
+            ),
+            a(
+              "End up convincing several people to do something after the party.",
+              "social",
+              "believer"
+            ),
+            a(
+              "Introduce myself to whoever looks like they’re having the most fun.",
+              "social",
+              "explorer"
+            )
+          ]
+        ),
+
+        q(
+          "Someone confidently says something you think is completely wrong.",
+          [
+            a(
+              "I need to know why they think that.",
+              "hacker",
+              "explorer"
+            ),
+            a(
+              "Oh, we’re discussing this. Immediately.",
+              "believer",
+              "hacker"
+            ),
+            a(
+              "They can think whatever they want. I know where I stand.",
+              "independent",
+              "believer"
+            ),
+            a(
+              "Maybe I’m wrong. Time to investigate.",
+              "hacker",
+              "explorer"
+            ),
+            a(
+              "Let them finish. Maybe I’m about to learn something weird.",
+              "explorer",
+              "hacker"
+            )
+          ]
+        ),
+
+        q(
+          "You get handed a box of random junk and told to make something useful.",
+          [
+            a(
+              "Best assignment I’ve had all week.",
+              "tinkerer",
+              "explorer"
+            ),
+            a(
+              "First, inventory everything and figure out what we can actually make.",
+              "hacker",
+              "tinkerer"
+            ),
+            a(
+              "Grab something and start. I’m sure inspiration will strike eventually.",
+              "lucky",
+              "free"
+            ),
+            a(
+              "Wait, I actually have a GREAT idea.",
+              "tinkerer",
+              "lucky"
+            )
+          ]
+        ),
+
+        q(
+          "The group chat has spent 45 minutes trying to decide where to eat.",
+          [
+            a(
+              "I’m making the reservation. You’re welcome.",
+              "independent",
+              "believer"
+            ),
+            a(
+              "Okay, everyone send your top two. I’ll figure this out.",
+              "social",
+              "hacker"
+            ),
+            a(
+              "I genuinely do not care. Someone just tell me where to be.",
+              "free",
+              "social"
+            ),
+            a(
+              "Wait—I know a place none of you have tried.",
+              "explorer",
+              "social"
+            ),
+            a(
+              "Pick somewhere. If it sucks, we’ll go somewhere else.",
+              "free",
+              "lucky"
+            )
+          ]
+        ),
+
+        q("You pick up a new hobby. What happens next?", [
+          a(
+            "Three hours later, I know an unreasonable amount about it.",
+            "hacker",
+            "explorer"
+          ),
+          a(
+            "I immediately start modifying something because I think I can make it better.",
+            "tinkerer",
+            "hacker"
+          ),
+          a(
+            "Everyone I know is about to hear about this. Repeatedly.",
+            "social",
+            "believer"
+          ),
+          a(
+            "Six months later, I’m still doing it. I may have made this part of my personality.",
+            "believer",
+            "independent"
+          ),
+          a(
+            "Immediately buy way too much stuff for it. I live here now.",
+            "tinkerer",
+            "believer"
+          )
+        ])
+      ];
+
+      // Card image filenames and database IDs
+
+      const cardAssets = {
+        hacker: ["cypherpunk.png", "008"],
+        independent: ["dustin-d-trammell.png", "001"],
+        social: ["podcaster.png", "011"],
+        explorer: ["pre-coiner.png", "012"],
+        believer: ["bitcoin-maximalist.png", "006"],
+        lucky: ["lucky-hash.png", "094"],
+        free: ["leavin-work-early.png", "091"],
+        tinkerer: ["homebrew-trading-script.png", "045"]
+      };
+
+      // Quiz state
+
+      let current = 0,
+          scores = {},
+          primaryCounts = {},
+          selections = Array(questions.length).fill(null);
+
+      // Screen and score helpers
+
+      function resetScores() {
+        Object.keys(results).forEach(k => {
+          scores[k] = 0;
+          primaryCounts[k] = 0;
+        });
+      }
+
+      function show(id) {
+        document.querySelectorAll(".screen").forEach(x => {
+          x.classList.remove("active");
+        });
+
+        document.getElementById(id).classList.add("active");
+      }
+
+      // Start and render the quiz
+
+      function startQuiz() {
+        current = 0;
+        selections = Array(questions.length).fill(null);
+
+        resetScores();
+        show("quiz");
+        renderQuestion();
+      }
+
+      function renderQuestion() {
+        const item = questions[current];
+
+        document.getElementById("counter").textContent =
+          "Question " + (current + 1) + " of " + questions.length;
+
+        document.getElementById("question").textContent = item.question;
+
+        document.getElementById("bar").style.width =
+          (current / questions.length * 100) + "%";
+
+        const box = document.getElementById("answers");
+        box.innerHTML = "";
+
+        item.answers.forEach((ans, index) => {
+          const b = document.createElement("button");
+
+          b.className = "answer";
+          b.textContent = ans.text;
+
+          b.setAttribute(
+            "aria-pressed",
+            String(selections[current] === index)
+          );
+
+          b.onclick = () => choose(index);
+
+          box.appendChild(b);
+        });
+
+        document.getElementById("back").disabled = current === 0;
+
+        document.getElementById("next").disabled =
+          selections[current] === null;
+
+        document.getElementById("next").textContent =
+          current === questions.length - 1 ? "See my result" : "→";
+
+        document.getElementById("next").setAttribute(
+          "aria-label",
+          current === questions.length - 1
+            ? "See my result"
+            : "Next question"
+        );
+
+        document.getElementById("question").focus();
+      }
+
+      // Answer selection and navigation
+
+      function choose(index) {
+        if (
+          !Number.isInteger(index) ||
+          !questions[current].answers[index]
+        ) {
+          return;
+        }
+
+        selections[current] = index;
+
+        Array.from(document.getElementById("answers").children).forEach(
+          (b, i) => {
+            b.setAttribute("aria-pressed", String(i === index));
+          }
+        );
+
+        document.getElementById("next").disabled = false;
+      }
+
+      function previousQuestion() {
+        if (current > 0) {
+          current--;
+          renderQuestion();
+        }
+      }
+
+      function nextQuestion() {
+        if (selections[current] === null) {
+          return;
+        }
+
+        if (current < questions.length - 1) {
+          current++;
+          renderQuestion();
+        } else {
+          finish();
+        }
+      }
+
+      // Calculate and display the result
+
+      function calculateScores() {
+        resetScores();
+
+        selections.forEach((index, i) => {
+          const ans = questions[i].answers[index];
+
+          scores[ans.p] += 2;
+          scores[ans.s] += 1;
+          primaryCounts[ans.p]++;
+        });
+      }
+
+      function finish() {
+        if (
+          selections.some(
+            (index, i) =>
+              index === null || !questions[i].answers[index]
+          )
+        ) {
+          return;
+        }
+
+        calculateScores();
+
+        /*
+         * Normalize by each archetype's available scoring exposure.
+         * This prevents archetypes with more mapped opportunities
+         * from winning by structure alone.
+         */
+
+        const exposure = {
+          hacker: 25,
+          independent: 19,
+          social: 21,
+          explorer: 22,
+          believer: 28,
+          lucky: 18,
+          free: 20,
+          tinkerer: 23
+        };
+
+        const adjusted = {};
+
+        Object.keys(scores).forEach(k => {
+          adjusted[k] = scores[k] / exposure[k];
+        });
+
+        const max = Math.max(...Object.values(adjusted));
+
+        let tied = Object.keys(adjusted).filter(
+          k => Math.abs(adjusted[k] - max) < 1e-10
+        );
+
+        if (tied.length > 1) {
+          const pmax = Math.max(
+            ...tied.map(k => primaryCounts[k])
+          );
+
+          tied = tied.filter(k => primaryCounts[k] === pmax);
+        }
+
+        const winner = tied[0];
+        const r = results[winner];
+
+        document.getElementById("cardName").textContent = r.card;
+        document.getElementById("archetype").textContent = r.archetype;
+        document.getElementById("traits").textContent = r.traits;
+        document.getElementById("description").textContent = r.description;
+
+        const image = document.getElementById("cardImage");
+
+        image.src = "assets/" + cardAssets[winner][0];
+        image.alt = r.card + " card";
+
+        document.getElementById("explorerLink").href =
+          "https://explorer.bitcoin-ccg.roguesignal.io/" +
+          cardAssets[winner][1];
+
+        show("result");
+      }
+
+      // Restart and share
+
+      function restart() {
+        show("start");
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
+
+      async function shareResult() {
+        const card = document.getElementById("cardName").textContent,
+              arch = document.getElementById("archetype").textContent;
+
+        const text =
+          "I got " + card + " — " + arch +
+          " — on the Bitcoin CCG personality quiz.";
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: "Which Bitcoin CCG Card Are You?",
+              text,
+              url: location.href
+            });
+
+            return;
+          } catch (e) {}
+        }
+
+        try {
+          await navigator.clipboard.writeText(
+            text + " " + location.href
+          );
+
+          alert("Result copied to clipboard.");
+        } catch (e) {
+          alert(text);
+        }
+      }
+
+      // Initialize scores
+
+      resetScores();
+    </script>
+  </body>
 </html>
